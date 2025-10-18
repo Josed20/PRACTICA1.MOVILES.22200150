@@ -34,95 +34,99 @@ fun WaterScreen(nav: NavController, vm: WaterViewModel = viewModel()) {
     val snackbarHost = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     var expanded by remember { mutableStateOf(false) }
+    val scrollState = rememberScrollState()
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHost) },
         topBar = { TopBarBack(nav, "Consumo de agua") }
     ) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(padding)
-                .imePadding()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .padding(padding)
+            .imePadding()
         ) {
-            // Tarjeta superior grande y moderna que muestra el resultado o un mensaje
-            ElevatedCard(
-                shape = RoundedCornerShape(16.dp),
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 140.dp)
-                    .animateContentSize()
+                    .verticalScroll(scrollState)
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    vm.result.value?.let { res ->
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text("Recomendación", style = MaterialTheme.typography.titleLarge)
-                            Spacer(Modifier.height(8.dp))
-                            Text(res, style = MaterialTheme.typography.headlineSmall)
-                        }
-                    } ?: run {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text("Calcula tu consumo ideal", style = MaterialTheme.typography.titleLarge)
-                            Spacer(Modifier.height(8.dp))
-                            Text("Ingresa tu nombre y peso", style = MaterialTheme.typography.bodyMedium)
+                // Tarjeta superior grande y moderna que muestra el resultado o un mensaje
+                ElevatedCard(
+                    shape = RoundedCornerShape(16.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 140.dp)
+                        .animateContentSize()
+                ) {
+                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        vm.result.value?.let { res ->
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Text("Recomendación", style = MaterialTheme.typography.titleLarge)
+                                Spacer(Modifier.height(8.dp))
+                                Text(res, style = MaterialTheme.typography.headlineSmall)
+                            }
+                        } ?: run {
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                Text("Calcula tu consumo ideal", style = MaterialTheme.typography.titleLarge)
+                                Spacer(Modifier.height(8.dp))
+                                Text("Ingresa tu nombre y peso", style = MaterialTheme.typography.bodyMedium)
+                            }
                         }
                     }
                 }
-            }
 
-            OutlinedTextField(
-                value = vm.name.value,
-                onValueChange = { vm.name.value = it },
-                label = { Text("Nombre") },
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            OutlinedTextField(
-                value = vm.weightText.value,
-                onValueChange = { vm.weightText.value = it },
-                label = { Text("Peso (kg)") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), // ✅ usar la import coincidente
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = !expanded }) {
                 OutlinedTextField(
-                    readOnly = true,
-                    value = vm.gender.value.label,
-                    onValueChange = {},
-                    label = { Text("Género") },
-                    modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable, enabled = true).fillMaxWidth()
+                    value = vm.name.value,
+                    onValueChange = { vm.name.value = it },
+                    label = { Text("Nombre") },
+                    modifier = Modifier.fillMaxWidth()
                 )
-                ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                    Gender.entries.forEach { g ->
-                        DropdownMenuItem(
-                            text = { Text(g.label) },
-                            onClick = { vm.gender.value = g; expanded = false }
-                        )
+
+                OutlinedTextField(
+                    value = vm.weightText.value,
+                    onValueChange = { vm.weightText.value = it },
+                    label = { Text("Peso (kg)") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), // ✅ usar la import coincidente
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = !expanded }) {
+                    OutlinedTextField(
+                        readOnly = true,
+                        value = vm.gender.value.label,
+                        onValueChange = {},
+                        label = { Text("Género") },
+                        modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable, enabled = true).fillMaxWidth()
+                    )
+                    ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                        Gender.entries.forEach { g ->
+                            DropdownMenuItem(
+                                text = { Text(g.label) },
+                                onClick = { vm.gender.value = g; expanded = false }
+                            )
+                        }
                     }
                 }
+
+                Button(
+                    onClick = {
+                        val msg = vm.calculate()
+                        if (msg == null) {
+                            Toast.makeText(ctx, "Verifica nombre y peso (5–200).", Toast.LENGTH_SHORT).show()
+                            scope.launch { snackbarHost.showSnackbar("Datos inválidos") }
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(52.dp),
+                    shape = RoundedCornerShape(12.dp),
+                ) { Text("Calcular") }
+
+                // Si hay resultado, lo dejamos bien visible y con animación dentro de la tarjeta superior
+                // (ya mostrado arriba). Dejamos un espacio para separar del final.
+                Spacer(Modifier.height(8.dp))
             }
-
-            Button(
-                onClick = {
-                    val msg = vm.calculate()
-                    if (msg == null) {
-                        Toast.makeText(ctx, "Verifica nombre y peso (5–200).", Toast.LENGTH_SHORT).show()
-                        scope.launch { snackbarHost.showSnackbar("Datos inválidos") }
-                    }
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(52.dp),
-                shape = RoundedCornerShape(12.dp),
-            ) { Text("Calcular") }
-
-            // Si hay resultado, lo dejamos bien visible y con animación dentro de la tarjeta superior
-            // (ya mostrado arriba). Dejamos un espacio para separar del final.
-            Spacer(Modifier.height(8.dp))
         }
     }
 }
