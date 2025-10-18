@@ -14,7 +14,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.PRACTICA1MOVILES22200150">
+        android:theme="@style/Theme.PRACTICA1MOVILES22200150.Splash">
         <activity
             android:name=".MainActivity"
             android:exported="true"

@@ -1,5 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.PRACTICA1MOVILES22200150" parent="android:Theme.Material.Light.NoActionBar" />
+    <!-- Tema de splash: display a brand color con icono centrado mientras Compose carga -->
+    <style name="Theme.PRACTICA1MOVILES22200150.Splash" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_background</item>
+        <item name="colorPrimary">@color/brand_primary</item>
+        <item name="colorPrimaryVariant">@color/brand_primary_variant</item>
+        <item name="colorSecondary">@color/brand_secondary</item>
+        <item name="colorTertiary">@color/brand_tertiary</item>
+        <item name="android:statusBarColor">@color/brand_primary_variant</item>
+        <item name="android:navigationBarColor">@color/brand_primary</item>
+    </style>
+
+    <!-- Tema principal que se corresponde con el Theme Compose (usado en Manifest) -->
+    <style name="Theme.PRACTICA1MOVILES22200150" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/brand_primary</item>
+        <item name="colorPrimaryVariant">@color/brand_primary_variant</item>
+        <item name="colorSecondary">@color/brand_secondary</item>
+        <item name="colorTertiary">@color/brand_tertiary</item>
+        <item name="android:statusBarColor">@color/brand_primary_variant</item>
+        <item name="android:navigationBarColor">@color/brand_primary</item>
+        <item name="android:windowMinWidthMajor">320dp</item>
+        <item name="android:windowMinWidthMinor">320dp</item>
+    </style>
 </resources>
