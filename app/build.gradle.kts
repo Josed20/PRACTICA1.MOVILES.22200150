@@ -52,6 +52,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
     implementation("androidx.compose.material:material-icons-extended")
+    implementation(libs.androidx.compose.foundation)
 
     // Tests
     testImplementation(libs.junit)
@@ -77,4 +78,10 @@ dependencies {
     // Si migras a KSP (recomendado), usa esto y elimina el kapt de arriba:
     // ksp("androidx.room:room-compiler:2.6.0")
     implementation("androidx.room:room-ktx:2.6.0")
+
+    val bom = platform("androidx.compose:compose-bom:2025.01.00")
+    implementation(bom)
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.ui:ui-text")      // ← por si acaso
+    implementation("androidx.compose.material3:material3")
 }

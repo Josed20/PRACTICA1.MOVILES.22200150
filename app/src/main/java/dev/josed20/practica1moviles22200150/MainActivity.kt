@@ -4,14 +4,12 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import dev.josed20.practica1moviles22200150.presentation.navigate.AppNavGraph
+import androidx.navigation.compose.rememberNavController
+import dev.josed20.practica1moviles22200150.navigate.AppNavGraph
 import dev.josed20.practica1moviles22200150.ui.theme.PRACTICA1MOVILES22200150Theme
 
 class MainActivity : ComponentActivity() {
@@ -20,24 +18,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             PRACTICA1MOVILES22200150Theme {
-                AppNavGraph()
+                val nav = rememberNavController()
+                AppNavGraph(nav)
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    PRACTICA1MOVILES22200150Theme {
-        Greeting("Android")
     }
 }
